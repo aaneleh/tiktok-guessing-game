@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+.home {
+    @apply min-h-screen flex flex-col pt-[160px] justify-between;
+}
+
+.instructions {
+    @apply flex flex-col gap-8;
+}
+
+.instructions-content {
+    @apply flex flex-col gap-4;
+}

@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+.join-room {
+    @apply min-h-screen flex flex-col justify-between;
+}
+
+.join-room-content {
+    @apply flex flex-col gap-8;
+}
+
+.join-room-form {
+    @apply flex flex-col gap-8;
+}

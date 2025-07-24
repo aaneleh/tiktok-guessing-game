@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+.scoreboard {
+    @apply min-h-screen flex flex-col justify-between;
+}
+
+.scoreboard-content {
+    @apply flex flex-col gap-8;
+
+    & .title {
+        @apply self-center;
+    }
+}
+
+.scoreboard-players{
+    @apply flex flex-col gap-4;
+}
+
+.player {
+    @apply grid grid-cols-[1fr_1fr_20px];
+
+    & .username {
+        @apply opacity-50;
+    }
+
+}
+
