@@ -1,68 +1,83 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+@font-face {
+  font-family: Lexend;
+  src: url(assets/Lexend-VariableFont_wght.ttf)
 }
 
 body {
-  margin: 0;
+  font-family: Lexend, sans-serif;
+  font-size: 16px;
+  color: var(--white);
+  --black: #101010;
+  --white: #EFF1EE;
+  --dark-blue: #3531A0;
+  --light-blue: #524BF1;
+}
+
+.mobile-size {
+  padding: 40px;
+  width: 100dvh;
+  max-width: 578px;
+}
+
+.main {
+  @apply min-h-screen flex justify-center items-center;
+}
+
+.buttons {
+    @apply flex flex-col gap-4 items-stretch;
+}
+
+.gradient {
+  @apply bg-gradient-to-b from-[var(--black)] from-17% via-[var(--dark-blue)] via-54% via-[var(--light-blue)] via-66% to-[var(--white)] to-100%
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.subtitle {
+  font-size: 20px;
+  font-weight: 600;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.button-black {
+  @apply font-bold text-[var(--white)] bg-[var(--black)] py-2 rounded-xl text-center;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.button-transparent {
+  @apply font-bold text-[var(--black)] py-2 rounded-xl border-1 border-[var(--black)] text-center;
+
+}
+
+.go-back-link {
+  @apply flex gap-2 items-center;
+}
+
+.form-content {
+  @apply relative mt-4;
+
+  & input {
+    @apply border-b-2 border-white outline-none;
   }
-  a:hover {
-    color: #747bff;
+
+  & input::placeholder {
+    @apply opacity-0 transition-opacity;
   }
-  button {
-    background-color: #f9f9f9;
+
+  & label {
+    @apply pointer-events-none absolute top-0 text-lg transition-all;
+  }
+
+  &:has(input:focus) label,
+  &:has(input:not(:placeholder-shown)) label {
+    @apply top-[-18px] text-base;
+  }
+
+  &:has(input:focus) input::placeholder{
+    @apply opacity-100;
   }
 }
