@@ -1,5 +1,5 @@
 import './index.css'
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import { MdOutlineKeyboardArrowLeft, MdKeyboardArrowDown } from 'react-icons/md';
 import { Link } from 'react-router';
 import { TikTokEmbed } from 'react-social-media-embed';
 
@@ -9,14 +9,23 @@ function Video() {
       return (
         <section className='mobile-size video'>
             <Link to="/" className='go-back-link'>
-                <MdOutlineKeyboardArrowLeft/>Voltar
+                <MdOutlineKeyboardArrowLeft/>Sair
             </Link>
 
-            <h1 className="title">VIDEO</h1>
-
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div className='video-embed'>
                 <TikTokEmbed url="www.tiktok.com/@txs_cesar/video/7529606179366931767" width={325} />
             </div>
+
+            <form action="" className="video-guess">
+                <div className='select'>
+                    <select name="guess" id="guess">
+                        <option value="orangeknight">orangeknight</option>
+                    </select>
+                    <MdKeyboardArrowDown className='arrow'/>
+                </div>
+            
+                <button className="button-black">Chutar</button>
+            </form>
 
         </section>
     )

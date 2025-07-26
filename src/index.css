@@ -61,7 +61,7 @@ body {
   @apply relative mt-4;
 
   & input {
-    @apply border-b-2 border-white outline-none;
+    @apply border-b-2 border-current outline-none;
   }
 
   & input::placeholder {
@@ -79,5 +79,25 @@ body {
 
   &:has(input:focus) input::placeholder{
     @apply opacity-100;
+  }
+}
+
+
+.select {
+  @apply flex w-full items-center relative;
+
+  & select {
+      all: unset;
+      @apply border-b-2 border-current outline-none w-full;
+  }
+
+  &:has(select:focus){
+    & .arrow {
+      @apply scale-y-[-100%];
+    }
+  }
+
+  & .arrow {
+    @apply absolute right-0 scale-y-[100%];
   }
 }

@@ -1,23 +1,18 @@
 @import "tailwindcss";
 
-.scoreboard {
+.video {
     @apply min-h-screen flex flex-col justify-between;
 }
 
-.scoreboard-content {
-    @apply flex flex-col gap-8;
+.video-embed {
+    @apply self-center;
 }
 
-.scoreboard-players{
-    @apply flex flex-col gap-4;
-}
+.video-guess {
+    @apply self-center text-[var(--black)];
+    @apply flex flex-col gap-8 w-[320px];
 
-.player {
-    @apply grid grid-cols-[1fr_1fr_20px];
-
-    & .username {
-        @apply opacity-50;
+    & input {
+        @apply w-[320px];
     }
-
 }
-

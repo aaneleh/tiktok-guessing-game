@@ -12,7 +12,7 @@ function Scoreboard() {
 
             <div className="scoreboard-content">
                 <Link to="/" className='go-back-link'>
-                    <MdOutlineKeyboardArrowLeft/>Voltar
+                    <MdOutlineKeyboardArrowLeft/>Sair
                 </Link>
 
                 <h1 className="title">IM4S8 <GoCopy/></h1>
@@ -21,6 +21,7 @@ function Scoreboard() {
                     <h2 className="subtitle">Jogadores</h2>
 
                     <div className="player">
+                        <p className="subtitle">20</p>
                         <p className="name">orangeknight</p>
                         <p className="username">@oragenknight</p>
                         <span className="status">
@@ -29,6 +30,7 @@ function Scoreboard() {
                     </div>
                     
                     <div className="player">
+                        <p className="subtitle">12</p>
                         <p className="name">aaa</p>
                         <p className="username">@oragenknight</p>
                         <span className="status">
@@ -36,6 +38,10 @@ function Scoreboard() {
                         </span>
                     </div>
                 </div>
+            </div>
+
+            <div className="answer">
+                <p className='subtitle'> Resposta: apex_sloth </p>
             </div>
 
             <div className="buttons">
