@@ -4,6 +4,27 @@ const connection = require('./connection.cjs')
 
 connection.connect()
 
+function randomCode(){
+    let code = String.fromCharCode(
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65,
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65,
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65, 
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65, 
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65)
+    return code
+}
+
+
+function randomVideos(){
+    return [
+        "https://www.tiktok.com/@youngexwives/video/7535540572623342878",
+        "https://www.tiktok.com/@alanzoka/video/7535566386798578950",
+        "https://www.tiktok.com/@sprinklestarr3000/video/7534133905784360247",
+        "https://www.tiktok.com/@cruzhevert/video/7534551665018440967",
+        "https://www.tiktok.com/@meilizzz/video/7534829245323939086"
+    ]
+}
+
 //RETORNA TODAS AS SALAS
 router.get('/', async(req, res) => {
 
@@ -16,16 +37,6 @@ router.get('/', async(req, res) => {
     })
 
 })
-
-function randomCode(){
-    let code = String.fromCharCode(
-        Math.floor(Math.random() * (90 - 65 + 1) ) + 65,
-        Math.floor(Math.random() * (90 - 65 + 1) ) + 65,
-        Math.floor(Math.random() * (90 - 65 + 1) ) + 65, 
-        Math.floor(Math.random() * (90 - 65 + 1) ) + 65, 
-        Math.floor(Math.random() * (90 - 65 + 1) ) + 65)
-    return code
-}
 
 //CRIA NOVA SALA E NOVO JOGADOR
 router.post('/', async(req, res) => {
@@ -50,6 +61,8 @@ router.post('/', async(req, res) => {
 
     let username = req.body.username
     let tiktok = req.body.tiktok
+    let id_player
+    let videos
 
     connection.query('INSERT INTO game (code, password) VALUES (?, ?)', [code_game, password], function (error, results, fields) {
         if (error) {
@@ -63,11 +76,21 @@ router.post('/', async(req, res) => {
                 console.log(error)
                 return res.status(500).json({message: 'Erro criando jogador'})
             } 
-            return res.status(200).json({'code': code_game, 'id_game': id_game, 'id_player': results.insertId})
+            id_player = results.insertId
+            videos = randomVideos()
+
+            for(let i = 0; i < videos.length; i++){
+                connection.query('INSERT INTO video (id_player, url, watched) VALUES (?, ?, ?)', [id_player, videos[i], 0], function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                    return res.status(500).json({message: 'Erro adicionando video'})
+                } 
+            })  
+            }
+
+            return res.status(200).json({'code': code_game, 'id_game': id_game, 'id_player': id_player})
         })
     })
-
-    
 
 })
 
@@ -81,7 +104,6 @@ router.get('/:code/urlvideo', async(req, res) => {
             console.log(error)
             return res.status(500).json({message: 'Video não encontrado'})
         } 
-        console.log(results)
         return res.status(200).json(results[0].url)
     })
 
@@ -114,7 +136,7 @@ router.get('/:code', async(req, res) => {
 
 })
 
-
+//EXCLUIR JOGO (ADMIN)
 router.delete('/:id', async(req,res)=> {
     let id_game = req.params.id
 
