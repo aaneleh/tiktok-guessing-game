@@ -18,22 +18,28 @@ function Scoreboard() {
     
     const API =  import.meta.env.VITE_API
 
+    const getScoreboard = async() => {
+        try{
+            const res = await axios.get(`${API}/game/${paramsCode}`)
+            const json = await res.data
+            console.log(json)
+            setAnswer(json.answer)
+            setPlayers(json.players)
+
+        } catch(err){
+            console.log('err', err.response.data.message)
+        }
+    }
+
     useEffect(()=> {
 
-        const getScoreboard = async() => {
-            try{
-                const res = await axios.get(`${API}/game/${paramsCode}`)
-                const json = await res.data
-                console.log(json)
-                setAnswer(json.answer)
-                setPlayers(json.players)
-
-            } catch(err){
-                console.log('err', err.response.data.message)
-            }
-        }
-
         getScoreboard()
+
+        const interval = setInterval(() => {
+            getScoreboard()
+        }, 5000);
+
+        return () => clearInterval(interval);
 
     }, [])
 
