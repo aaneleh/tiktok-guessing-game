@@ -1,4 +1,4 @@
-import { Home, CreateRoom, JoinRoom, Scoreboard, Video } from './pages';
+import { Home, CreateRoom, JoinRoom, Scoreboard, Video, Admin } from './pages';
 import { BrowserRouter, Routes, Route } from 'react-router'
 
 function App() {
@@ -10,8 +10,9 @@ function App() {
             <Route path="/" element={<Home/>}/>
             <Route path="/join" element={<JoinRoom/>}/>
             <Route path="/create" element={<CreateRoom/>}/>
-            <Route path="/room/:id" element={<Scoreboard/>}/>
+            <Route path="/room/:code" element={<Scoreboard/>}/>
             <Route path="/video" element={<Video/>}/>
+            <Route path="/admin" element={<Admin/>}/>
         </Routes>
       </BrowserRouter>
     </main>

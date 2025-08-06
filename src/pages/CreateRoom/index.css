@@ -4,10 +4,6 @@
     @apply min-h-screen flex flex-col justify-between;
 }
 
-.create-room-content {
-    @apply flex flex-col gap-8;
-}
-
 .create-room-form {
     @apply flex flex-col gap-8;
 }
