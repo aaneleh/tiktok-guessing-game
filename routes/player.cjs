@@ -24,25 +24,30 @@ router.post('/', async(req, res) => {
     let password = req.body.password
     let id_game
 
+    console.log('code: ', code_game)
+
     //GET ID_GAME FROM CODE_GAME
     connection.query('SELECT id_game FROM game WHERE code = ? AND password = ?', [code_game, password], function (error, results, fields) {
         if (error) {
             console.log(error)
-            return res.status(500).json({message: 'Sala não encontrada'})
+            return res.status(500).json({message: 'Erro'})
         } 
-        console.log(results[0])
+
+        if(results.length == 0){
+            return res.status(400).json({message: 'Sala não existe'})
+        }
         id_game = results[0].id_game;
-    })
 
-    let username = req.body.username
-    let tiktok = req.body.tiktok
+        let username = req.body.username
+        let tiktok = req.body.tiktok
 
-    connection.query('INSERT INTO player (id_game, username, tiktok) VALUES (?, ?, ?)', [id_game, username, tiktok], function (error, results, fields) {
-        if (error) {
-            console.log(error)
-            return res.status(500).json({message: 'Erro criando jogador'})
-        } 
-        return res.status(200).json({'id_game': id_game, 'id_player': results.insertId})
+        connection.query('INSERT INTO player (id_game, username, tiktok) VALUES (?, ?, ?)', [id_game, username, tiktok], function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                return res.status(500).json({message: 'Erro criando jogador'})
+            } 
+            return res.status(200).json({'id_game': id_game, 'id_player': results.insertId})
+        })
     })
 
 })
@@ -87,8 +92,8 @@ router.patch('/:id/guess', async(req, res) => {
 })
 
 //DELETA JOGADOR QUANDO ELE SAI DA SALA
-router.delete('/:id', async(req, res) => {
-    
+router.delete('/:id/exit', async(req, res) => {
+
     let id_player = req.params.id
 
     connection.query('DELETE FROM player WHERE id_player = ?', [id_player], function (error, results, fields) {
@@ -96,9 +101,30 @@ router.delete('/:id', async(req, res) => {
             console.log(error)
             return res.status(500).json({message: 'Erro excluindo jogador'})
         }
-        return res.status(200)
+    })
+    
+    connection.query('DELETE FROM video WHERE id_player = ?', [id_player], function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            return res.status(500).json({message: 'Erro excluindo videos'})
+        }
     })
 
+    return res.status(200).json({message: 'Jogador e vídeos excluídos com sucesso'})
+
+})
+
+router.delete('/:id', async(req,res)=> {
+    let id_player = req.params.id
+
+    connection.query('DELETE FROM player WHERE id_player = ?', [id_player], function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            return res.status(500).json({message: 'Erro excluindo jogador'})
+        }
+
+        return res.status(200).json({message: 'Jogador excluído com sucesso'})
+    })
 })
 
 module.exports = router
