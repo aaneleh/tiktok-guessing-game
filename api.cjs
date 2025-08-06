@@ -13,7 +13,7 @@ app.use(express.urlencoded({extended: true}))
 
 connection.connect()
 
-app.get('/video'), async(req, res) => {
+app.get('/video', async(req, res) => {
     connection.query('SELECT * FROM video', function (error, results, fields) {
         if (error) {
             console.log(error)
@@ -21,7 +21,20 @@ app.get('/video'), async(req, res) => {
         } 
         return res.status(200).json(results)
     })
-}
+})
+
+app.delete('/video/:id', async(req, res) => {
+
+    let id_video = req.params.id
+
+    connection.query('DELETE FROM video WHERE id_video = ?', [id_video], function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            return res.status(500).json({message: 'Erro excluindo video'})
+        } 
+        return res.status(200).json({message: 'Video excluido com sucesso'})
+    })
+})
 
 app.use('/player', playerRouter)
 

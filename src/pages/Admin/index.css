@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+
+.admin {
+    @apply min-w-screen px-[10dvh] flex flex-col gap-8;
+
+}
+.table {
+    @apply min-w-full;
+}
+.table-header {
+    @apply flex justify-between items-center px-4 bg-[var(--dark-blue)];
+
+}
+.table-row {
+    @apply flex justify-between items-center px-4 bg-[var(--black)];
+}
