@@ -5,7 +5,7 @@ const connection = require('./connection.cjs')
 connection.connect()
 
 //RETORNA TODAS AS SALAS
-router.get('/'), async(req, res) => {
+router.get('/', async(req, res) => {
 
     connection.query('SELECT * FROM game', function (error, results, fields) {
         if (error) {
@@ -15,12 +15,36 @@ router.get('/'), async(req, res) => {
         return res.status(200).json(results)
     })
 
+})
+
+function randomCode(){
+    let code = String.fromCharCode(
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65,
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65,
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65, 
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65, 
+        Math.floor(Math.random() * (90 - 65 + 1) ) + 65)
+    return code
 }
 
 //CRIA NOVA SALA E NOVO JOGADOR
 router.post('/', async(req, res) => {
     
-    let code_game = 'ABCDEF';
+    let code_game
+    let isUnique
+
+    do {
+        code_game = randomCode();
+        isUnique = true;
+        connection.query('SELECT id_game FROM game WHERE code = ?', [code_game], function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                return res.status(500)
+            } 
+            isUnique = results.length == 0
+        })
+    } while (!isUnique)
+
     let password = req.body.password
     let id_game
 
@@ -33,45 +57,17 @@ router.post('/', async(req, res) => {
             return res.status(500).json({message: 'Erro criando sala'})
         } 
         id_game = results.insertId
+
+        connection.query('INSERT INTO player (id_game, username, tiktok) VALUES (?, ?, ?)', [id_game, username, tiktok], function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                return res.status(500).json({message: 'Erro criando jogador'})
+            } 
+            return res.status(200).json({'code': code_game, 'id_game': id_game, 'id_player': results.insertId})
+        })
     })
 
-    connection.query('INSERT INTO player (id_game, username, tiktok) VALUES (?, ?, ?)', [id_game, username, tiktok], function (error, results, fields) {
-        if (error) {
-            console.log(error)
-            return res.status(500).json({message: 'Erro criando jogador'})
-        } 
-        return res.status(200).json({'id_game': id_game, 'id_player': results.insertId})
-    })
-
-})
-
-//INFORMAÇÕES ATUAIS DA SALA
-router.get('/:code', async(req, res) => {
     
-    let answer
-    let code = req.params.code
-/* 
-SELECT username FROM player WHERE id_player = (SELECT id_player FROM video WHERE = (SELECT id_video FROM game WHERE code = ? LIMIT 1) LIMIT 1)
-    
-SELECT player.username FROM game LEFT JOIN video ON game.id_video = video.id_video LEFT JOIN player ON video.id_player = player.id_player WHERE game.code = ?
-*/
-    connection.query('SELECT username FROM player WHERE id_player =(SELECT id_player FROM video WHERE = (SELECT id_video FROM game WHERE code = ? LIMIT 1) LIMIT 1)', [code], function (error, results, fields) {
-        if (error) {
-            console.log(error)
-            return res.status(500).json({message: 'Sala, vídeo ou resposta não encontrados'})
-        } 
-        console.log(results)
-        answer = results[0].username
-    })
-
-    connection.query('SELECT score, username, tiktok, status FROM player WHERE id_game = (SELECT id_game FROM game WHERE code = ? LIMIT 1)', [code], function (error, results, fields) {
-        if (error) {
-            console.log(error)
-            return res.status(500).json({message: 'Jogadores não encontrados'})
-        } 
-        console.log(results)
-        return res.status(200).json({'answer': answer, 'players': results})
-    })
 
 })
 
@@ -91,5 +87,44 @@ router.get('/:code/urlvideo', async(req, res) => {
 
 })
 
+//INFORMAÇÕES ATUAIS DA SALA
+router.get('/:code', async(req, res) => {
+    
+    let answer
+    let code = req.params.code
+
+    connection.query('SELECT player.username FROM game LEFT JOIN video ON game.id_video = video.id_video LEFT JOIN player ON video.id_player = player.id_player WHERE game.code = ?', [code], function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            return res.status(500).json({message: 'Erro buscando informações do jogo'})
+        } 
+        console.log(results)
+        if(results.length == 0) return res.status(500).json({message: 'Sala, vídeo ou resposta não encontrados'})
+        answer = results[0].username
+
+        connection.query('SELECT score, username, tiktok, status FROM player WHERE id_game = (SELECT id_game FROM game WHERE code = ? LIMIT 1)', [code], function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                return res.status(500).json({message: 'Jogadores não encontrados'})
+            } 
+            console.log(results)
+            return res.status(200).json({'answer': answer, 'players': results})
+        })
+    })
+
+})
+
+
+router.delete('/:id', async(req,res)=> {
+    let id_game = req.params.id
+
+    connection.query('DELETE FROM game WHERE id_game = ?', [id_game], function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            return res.status(500).json({message: 'Erro excluindo jogo'})
+        } 
+        return res.status(200).json({message: 'Jogo excluido com sucesso'})
+    })
+})
 
 module.exports = router
